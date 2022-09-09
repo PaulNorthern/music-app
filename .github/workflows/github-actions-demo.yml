@@ -18,8 +18,8 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: install modules
         run: npm install
-      - name: unit test
-        run: npm run test:unit
+#      - name: unit test
+#        run: npm run test:unit
 #      - name: build project
 #        run: npm run build
 #      - name: lint code
