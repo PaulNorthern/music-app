@@ -22,9 +22,11 @@
 
             <!-- Composition Items -->
             <app-composition-item
-                v-for="song in songs"
+                v-for="(song, i) in songs"
                 :key="song.docID"
-                :song="song">
+                :song="song"
+                :updateSong="updateSong"
+                :index="i">
             </app-composition-item>
 
           </div>
@@ -49,6 +51,12 @@ export default {
   components: {
     AppUpload,
     AppCompositionItem
+  },
+  methods: {
+    updateSong(i, values) {
+      this.songs[i].modified_name = values.modified_name;
+      this.songs[i].genre = values.genre;
+    }
   },
   async created() {
     const snapshot = await songCollection.where('uid', '==', auth.currentUser.uid).get();
