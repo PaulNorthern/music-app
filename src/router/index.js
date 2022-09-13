@@ -45,6 +45,8 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
+  // if the recoed does not have this meta field
+  // it does not require auth
   if (!to.meta.requiresAuth) {
     next();
     return;
