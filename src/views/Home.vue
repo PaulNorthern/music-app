@@ -54,21 +54,65 @@ export default {
   name: "Home",
   data() {
     return {
-      songs: []
+      songs: [],
+      maxPerPage: 25,
+      pendingRequest: false
     };
   },
   components: {
     AppSongItem
   },
-  async created() {
-    const snapshots = await songCollection.get();
+  methods: {
+    handleScroll() {
+      const {scrollTop, offsetHeight} = document.documentElement;
+      const {innerHeight} = window;
+      const bottomOfWindows = Math.round(scrollTop) + innerHeight === offsetHeight;
 
-    snapshots.forEach((document) => {
-      this.songs.push({
-        docID: document.id,
-        ...document.data()
+      if (bottomOfWindows) {
+        // console.log('Bottom of windows');
+        this.getSongs();
+      }
+    },
+    async getSongs() {
+      if (this.pendingRequest) {
+        return;
+      }
+
+      this.pendingRequest = true;
+      let snapshots;
+
+      if (this.songs.length) {
+        const lastDoc = await songCollection
+            .doc(this.songs[this.songs.length - 1].docID)
+            .get();
+        snapshots = await songCollection
+            .orderBy('modified_name')
+            .startAfter(lastDoc)
+            .limit(this.maxPerPage)
+            .get();
+      } else {
+        snapshots = await songCollection
+            .orderBy('modified_name')
+            .limit(this.maxPerPage)
+            .get();
+      }
+
+      snapshots.forEach((document) => {
+        this.songs.push({
+          docID: document.id,
+          ...document.data()
+        });
       });
-    });
+
+      this.pendingRequest = false;
+    }
+  },
+  beforeUnmount() {
+    window.removeEventListener('scroll', this.handleScroll);
+  },
+  async created() {
+    await this.getSongs();
+    window.addEventListener('scroll', this.handleScroll);
   }
 };
 </script>
