@@ -4,8 +4,10 @@
     <div class="md:grid md:grid-cols-3 md:gap-4">
       <div class="col-span-1">
 
-      <!--  Upload      -->
-      <app-upload ref="upload"></app-upload>
+      <!--  Upload Component    -->
+      <app-upload ref="upload"
+        :addSong="addSong"
+      ></app-upload>
 
       </div>
       <div class="col-span-2">
@@ -20,7 +22,7 @@
           </div>
           <div class="p-6">
 
-            <!-- Composition Items -->
+            <!-- Composition Items Component -->
             <app-composition-item
                 v-for="(song, i) in songs"
                 :key="song.docID"
@@ -60,19 +62,21 @@ export default {
     },
     removeSong(i){
       this.songs.splice(i, 1);
-    }
-  },
-  async created() {
-    const snapshot = await songCollection.where('uid', '==', auth.currentUser.uid).get();
-
-    snapshot.forEach((document) => {
+    },
+    addSong(document) {
       const song = {
         ...document.data(),
         docID: document.id
       }
-
       this.songs.push(song);
-    });
+    }
+  },
+  async created() {
+    const snapshot = await songCollection
+        .where('uid', '==', auth.currentUser.uid)
+        .get();
+
+    snapshot.forEach(this.addSong);
   }
   // beforeRouteLeave(to, from, next) {
   //   this.$refs.upload.cancelUploads();
