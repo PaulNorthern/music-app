@@ -26,7 +26,8 @@
                 :key="song.docID"
                 :song="song"
                 :updateSong="updateSong"
-                :index="i">
+                :index="i"
+                :removeSong="removeSong">
             </app-composition-item>
 
           </div>
@@ -56,6 +57,9 @@ export default {
     updateSong(i, values) {
       this.songs[i].modified_name = values.modified_name;
       this.songs[i].genre = values.genre;
+    },
+    removeSong(i){
+      this.songs.splice(i, 1);
     }
   },
   async created() {
