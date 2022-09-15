@@ -27,7 +27,7 @@
     >
       <div class="px-6 pt-6 pb-5 font-bold border-b border-gray-200">
         <!-- Comment Count -->
-        <span class="card-title">Comments (15)</span>
+        <span class="card-title">Comments ({{ song.comment_count }})</span>
         <i class="fa fa-comments float-right text-green-400 text-2xl"></i>
       </div>
       <div class="p-6">
@@ -124,6 +124,10 @@ export default {
       return;
     }
 
+    const { sort } = this.$route.query;
+
+    this.sort = sort === "1" || sort === "2" ? sort : "1";
+
     this.song = docSnapshot.data();
     await this.getComments();
   },
@@ -143,6 +147,13 @@ export default {
       };
 
       await commentCollection.add(newComment);
+
+      // TODO: refactor this
+      this.song.comment_count += 1;
+
+      await songCollection.doc(this.$route.params.id).update({
+        comment_count: this.song.comment_count
+      });
 
       await this.getComments();
 
@@ -166,6 +177,19 @@ export default {
           })
       ]);
     }
+  },
+  watch: {
+    sort(newVal) {
+      if (newVal === this.$route.query.sort) {
+        return;
+      }
+
+      this.$router.push({
+        query: {
+          sort: newVal,
+        }
+      });
+    },
   }
 }
 </script>
