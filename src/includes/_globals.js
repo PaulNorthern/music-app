@@ -1,4 +1,5 @@
-import _ from "lodash";
+import upperFirst from "lodash/upperFirst";
+import camelCase from "lodash/camelCase";
 
 export default {
     install(app) {
@@ -9,8 +10,8 @@ export default {
 
         // convert obj to array
         Object.entries(baseComponents).forEach(([path, module]) => {
-            const componentName = _.upperFirst(
-                _.camelCase(
+            const componentName = upperFirst(
+                camelCase(
                     path
                         .split("/")
                         .pop()
