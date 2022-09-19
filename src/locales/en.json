@@ -1,6 +1,14 @@
 {
   "home": {
-    "listen": "Listen to Great Music!"
+    "listen": "Listen to Great Music!",
+    "songs": "Songs",
+    "navbar": {
+      "music": "Music",
+      "about": "About",
+      "manage": "Manage",
+      "logout": "Logout",
+      "sign_in": "Login / Register"
+    }
   },
   "song": {
     "comment_count": "No comments | 1 comment | {count} comments"
